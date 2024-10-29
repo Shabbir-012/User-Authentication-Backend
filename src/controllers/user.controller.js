@@ -28,11 +28,11 @@ const generateAccessAndRefreshToken = async (userId) => {
 // register the new user
 const registerUser = asyncHandler(async (req, res) => {
   // de structure username email pass from req body
-  const { username, email, password } = req.body;
+  const { username, email, password, role } = req.body;
 
   // validate the input field
 
-  if ([username, email, password].some((field) => field?.trim === "")) {
+  if ([username, email, password, role].some((field) => field?.trim === "")) {
     throw new ApiError(400, "All fields are required");
   }
 
@@ -65,6 +65,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     avatar: avatar.url,
+    role,
   });
 
   // creates a new user and retrieves their details without exposing sensitive information such as passwords and refresh tokens.

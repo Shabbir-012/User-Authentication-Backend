@@ -8,6 +8,8 @@ import {
 import { upload } from "../middlewares/multer.middleware.js";
 import verifyJWT from "../middlewares/auth.middleware.js";
 
+import verifyRole from "../middlewares/role.middleware.js"
+
 const router = Router();
 
 router.route("/register").post(
@@ -26,4 +28,18 @@ router.route("/login").post(loginUser);
 
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);
+
+// userbase router
+
+router.use(verifyJWT, verifyRole("manager" , "admin")); // Ensure JWT is verified and the role is manager
+router.route("/manager").get((req, res) => {
+  res.status(200).json({ message: "Welcome, Manager!" });
+});
+
+router.use(verifyJWT, verifyRole("admin")); // Ensure JWT is verified and the role is manager
+router.route("/admin").get((req, res) => {
+  res.status(200).json({ message: "Welcome, Admin!" });
+});
+
+
 export default router;
