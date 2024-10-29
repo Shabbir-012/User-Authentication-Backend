@@ -31,12 +31,12 @@ router.route("/refresh-token").post(refreshAccessToken);
 
 // userbase router
 
-router.use(verifyJWT, verifyRole("manager" , "admin")); // Ensure JWT is verified and the role is manager
+router.use(verifyJWT, verifyRole("manager" , "admin")); 
 router.route("/manager").get((req, res) => {
   res.status(200).json({ message: "Welcome, Manager!" });
 });
 
-router.use(verifyJWT, verifyRole("admin")); // Ensure JWT is verified and the role is manager
+router.use(verifyJWT, verifyRole("admin")); 
 router.route("/admin").get((req, res) => {
   res.status(200).json({ message: "Welcome, Admin!" });
 });
