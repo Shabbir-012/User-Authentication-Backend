@@ -1,3 +1,5 @@
+//src/routes/user.routes.js
+
 import { Router } from "express";
 import {
   loginUser,
@@ -8,19 +10,21 @@ import {
 import { upload } from "../middlewares/multer.middleware.js";
 import verifyJWT from "../middlewares/auth.middleware.js";
 
-import verifyRole from "../middlewares/role.middleware.js"
+import verifyRole from "../middlewares/role.middleware.js";
 
 const router = Router();
 
-router.route("/register").post(
-  upload.fields([
-    {
-      name: "avatar",
-      maxCount: 1,
-    },
-  ]),
-  registerUser
-);
+// router.route("/register").post(
+//   upload.fields([
+//     {
+//       name: "avatar",
+//       maxCount: 1,
+//     },
+//   ]),
+//   registerUser
+// );
+
+router.route("/register").post(registerUser);
 
 router.route("/login").post(loginUser);
 
@@ -31,15 +35,14 @@ router.route("/refresh-token").post(refreshAccessToken);
 
 // userbase router
 
-router.use(verifyJWT, verifyRole("manager" , "admin")); 
+router.use(verifyJWT, verifyRole("manager", "admin"));
 router.route("/manager").get((req, res) => {
   res.status(200).json({ message: "Welcome, Manager!" });
 });
 
-router.use(verifyJWT, verifyRole("admin")); 
+router.use(verifyJWT, verifyRole("admin"));
 router.route("/admin").get((req, res) => {
   res.status(200).json({ message: "Welcome, Admin!" });
 });
-
 
 export default router;

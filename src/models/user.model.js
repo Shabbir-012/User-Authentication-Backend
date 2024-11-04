@@ -1,3 +1,5 @@
+//  src/models/user.model.js
+
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -16,10 +18,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
-    avatar: {
-      type: String,
-      required: true,
-    },
+    // avatar: {
+    //   type: String,
+    //   required: true,
+    // },
     password: {
       type: String,
       required: [true, "Password is required"],
@@ -31,6 +33,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ["admin", "manager", "user"],
+      default: "user",
     },
   },
   { timestamps: true }

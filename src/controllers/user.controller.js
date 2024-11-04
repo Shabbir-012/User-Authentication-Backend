@@ -1,3 +1,5 @@
+//  src/controllers/user.controller.js
+
 import { asyncHandler } from "../utils/AsyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
@@ -13,11 +15,20 @@ const generateAccessAndRefreshToken = async (userId) => {
     const accessToken = user.generateAccessToken(); //  generate the accesstoken
     const refreshToken = user.generateRefreshToken(); //  generate the refresh token
 
+    // console.log("Generated Refresh Token:", refreshToken); // Check token generation
+
     user.refreshToken = refreshToken; // assign the refresh token to the user object
-    user.save({ validateBeforeSave: false }); // save user with new refresh token
+
+    // console.log("User before saving:", user); // Check user object before save
+
+    await user.save({ validateBeforeSave: false }); // save user with new refresh token
+
+    // console.log("User after saving:", user); // Check if token is saved
 
     return { accessToken, refreshToken };
   } catch (error) {
+    // console.error("Error in generateAccessAndRefreshToken:", error);
+
     throw new ApiError(
       500,
       "Something went wrong while generating refresh and access token"
@@ -46,27 +57,35 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // avatar image upload locally
-  const avatarLocalPath = req.files?.avatar[0]?.path;
+  // const avatarLocalPath = req.files?.avatar[0]?.path;
 
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar file is required");
-  }
+  // if (!avatarLocalPath) {
+  //   throw new ApiError(400, "Avatar file is required");
+  // }
 
   // avatar image upload cloudiary from local
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
+  // const avatar = await uploadOnCloudinary(avatarLocalPath);
 
-  if (!avatar) {
-    throw new ApiError(400, "Avatar file is required");
-  }
+  // if (!avatar) {
+  //   throw new ApiError(400, "Avatar file is required");
+  // }
 
   // create the user in db
   const user = await User.create({
-    username: username.toLowerCase(),
+    username: username,
     email,
     password,
-    avatar: avatar.url,
+    // avatar: avatar.url,
     role,
   });
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+
+  // Retrieve user from database to verify refreshToken
+  // const updatedUser = await User.findById(user._id);
+  // console.log("Updated User from DB:", updatedUser); // Check if refreshToken is saved
 
   // creates a new user and retrieves their details without exposing sensitive information such as passwords and refresh tokens.
   const createdUser = await User.findById(user._id).select(
@@ -80,7 +99,7 @@ const registerUser = asyncHandler(async (req, res) => {
   // response
   return res
     .status(201)
-    .json(new ApiResponse(200, createdUser, "User created successfully"));
+    .json(new ApiResponse(201, createdUser, "User created successfully"));
 });
 
 //log in user

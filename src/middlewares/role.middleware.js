@@ -1,3 +1,5 @@
+// src/middlewares/role.middleware.js
+
 const verifyRule = (...allowedRoles) => {
   return (req, res, next) => {
     const userRole = req.user.role;
