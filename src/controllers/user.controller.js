@@ -105,6 +105,9 @@ const registerUser = asyncHandler(async (req, res) => {
 //log in user
 
 const loginUser = asyncHandler(async (req, res) => {
+
+  // console.log("login request:", req.body);
+  
   const { username, email, password } = req.body;
 
   if (!email && !username) {
@@ -158,6 +161,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
 // log out user
 
+// log out user
+
 const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
@@ -181,6 +186,69 @@ const logoutUser = asyncHandler(async (req, res) => {
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User logged out"));
 });
+
+
+//--------------------------------------------------
+
+
+// const logoutUser = asyncHandler(async (req, res) => {
+
+//   console.log("Logout request:", req.body);
+  
+//   // const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+//   const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken || req.header("Authorization")?.replace("Bearer ", "");
+
+
+//   if (!incomingRefreshToken) {
+//     throw new ApiError(401, "Refresh token is required");
+//   }
+
+//   try {
+//     // Verify and decode the refresh token
+//     const decodedToken = jwt.verify(
+//       incomingRefreshToken,
+//       process.env.REFRESH_TOKEN_SECRET
+//     );
+
+//     // Find the user by the decoded token's ID
+//     const user = await User.findById(decodedToken._id);
+
+//     if (!user) {
+//       throw new ApiError(401, "User not found");
+//     }
+
+//     // Check if the provided token matches the stored hashed token
+//     const isValid = await user.isRefreshTokenValid(incomingRefreshToken);
+
+//     if (!isValid) {
+//       throw new ApiError(401, "Invalid refresh token");
+//     }
+
+//     // Clear the refresh token in the database
+//     user.refreshToken = undefined;
+//     await user.save();
+
+//     // Clear cookies
+//     const options = {
+//       httpOnly: true,
+//       // secure: process.env.NODE_ENV === "production", // Set secure only in production
+//       secure: true
+    
+//     };
+
+//     return res
+//       .status(200)
+//       .clearCookie("accessToken", options)
+//       .clearCookie("refreshToken", options)
+//       .json(new ApiResponse(200, {}, "User logged out successfully"));
+//   } catch (error) {
+//     throw new ApiError(401, error.message || "Invalid refresh token");
+//   }
+// });
+
+
+
 
 // refresh access token
 
