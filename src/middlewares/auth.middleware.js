@@ -17,7 +17,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
       // req.body.refreshToken||
       req.header("Authorization")?.replace("Bearer ", "");
 
-      // console.log("middlware token:", token);
+      console.log("middlware token:", token);
       
       
     if (!token) {
